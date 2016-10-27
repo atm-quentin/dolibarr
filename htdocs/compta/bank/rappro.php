@@ -33,6 +33,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/tva/class/tva.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
 $langs->load("banks");
 $langs->load("categories");
@@ -42,8 +43,26 @@ if (! $user->rights->banque->consolidate) accessforbidden();
 
 $action=GETPOST('action', 'alpha');
 $id=GETPOST('account', 'int');
+$dateyear=GETPOST('dateyear','int');
+$datemonth=GETPOST('datemonth','int');
+$viewtype=GETPOST('viewtype');
+$search_description=GETPOST('search_description','alpha');
+$search_debit=GETPOST('search_debit');
+$search_credit=GETPOST('search_credit');
+$paymentType = '';
+
+if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) // Both test are required to be compatible with all browsers
+{
+	$dateyear='';
+	$datemonth='';
+	$viewtype='-1';
+	$search_description='';
+	$search_debit='';
+	$search_credit='';
+}
 
 
+$formother = new FormOther($db);
 /*
  * Actions
  */
@@ -153,9 +172,51 @@ $acct->fetch($id);
 
 $now=dol_now();
 
+switch($viewtype){
+	case 0 :
+		$paymentType = 'VIR';
+		break;
+	case 1:
+		$paymentType = 'PRE';
+		break;
+	case 2:
+		$paymentType = 'LIQ';
+		break;
+	case 3:
+		$paymentType = 'CB';
+		break;
+	case 4:
+		$paymentType = 'CHQ';
+		break;
+	case 5:
+		$paymentType = 'TIP';
+		break;
+	case 6:
+		$paymentType = 'VAD';
+		break;
+	case 7:
+		$paymentType = 'TRA';
+		break;
+	case 8:
+		$paymentType = 'FAC';
+		break;
+	default:
+		$paymentType='';
+	
+}
+
 $sql = "SELECT b.rowid, b.dateo as do, b.datev as dv, b.amount, b.label, b.rappro, b.num_releve, b.num_chq, b.fk_type as type";
 $sql.= " FROM ".MAIN_DB_PREFIX."bank as b";
 $sql.= " WHERE rappro=0 AND fk_account=".$acct->id;
+if(!empty($dateyear)){
+	$sql.= " AND YEAR(b.dateo)=".$dateyear;
+}
+if(!empty($datemonth)){
+	$sql.=" AND MONTH(b.dateo)=".$datemonth;
+}
+if(!empty($paymentType)){
+	$sql.=" AND b.fk_type='".$paymentType."'";
+}
 $sql.= " ORDER BY dateo ASC";
 $sql.= " LIMIT 1000";	// Limit to avoid page overload
 
@@ -250,7 +311,44 @@ if ($resql)
     print '<td align="center" width="80">'.$langs->trans("Action").'</td>';
     print '<td align="center" width="60" class="nowrap">'.$langs->trans("ToConciliate").'</td>';
     print "</tr>\n";
-
+	//------------------------------------------------------------SEARCH
+	print '<tr class="liste_titre">';
+	
+	print '<td class="liste_titre" align="center">';
+    print '<input class="flat" type="text" size="1" maxlength="2" name="datemonth" value="'.$datemonth.'">';
+    $formother->select_year($dateyear?$dateyear:-1,'dateyear',1, 20, 5);
+	print '</td>';
+	print '<td></td>';
+	print '<td align="left">';
+	$listtypes=array(
+	    '0'=>$langs->trans("PaymentTypeVIR"), 
+	    '1'=>$langs->trans("PaymentTypePRE"), 
+	    '2'=>$langs->trans("PaymentTypeLIQ"),
+	    '3'=>$langs->trans("PaymentTypeCB"),
+	    '4'=>$langs->trans("PaymentTypeCHQ"),
+	    '5'=>$langs->trans("PaymentTypeTIP"),
+	    '6'=>$langs->trans("PaymentTypeVAD"),
+	    '7'=>$langs->trans("PaymentTypeTRA"),
+	    '8'=>$langs->trans("PaymentTypeFAC")         
+	);
+	print $form->selectarray('viewtype', $listtypes, $viewtype,-1);
+	print '</td>';
+	print '<td class="liste_titre" align="left">';
+	print '<input class="flat" type="text"  name="search_description" value="'.$search_description.'">';
+	print '</td>';
+	print '<td class="liste_titre" align="left">';
+	print $form->selectyesno('search_debit', $search_debit, 1, 0, 1);
+	print '</td>';
+	
+	print '<td class="liste_titre" align="right">';
+	print $form->selectyesno('search_credit', $search_credit, 1, 0, 1);
+	print '</td>';
+	print '<td></td>';
+	
+	print '<td class="liste_titre" align="right"><input type="image" class="liste_titre" name="button_search" src="'.img_picto($langs->trans("Search"),'search.png','','',1).'" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
+	print '<input type="image" class="liste_titre" name="button_removefilter" src="'.img_picto($langs->trans("Search"),'searchclear.png','','',1).'" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
+	print "</tr>\n";
+//----------------------------------------------------------------------------
 
     $i = 0;
     while ($i < $num)
