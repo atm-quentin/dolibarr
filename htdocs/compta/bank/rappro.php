@@ -43,24 +43,13 @@ if (! $user->rights->banque->consolidate) accessforbidden();
 
 $action=GETPOST('action', 'alpha');
 $id=GETPOST('account', 'int');
-$dateyear=GETPOST('dateyear','int');
-$datemonth=GETPOST('datemonth','int');
-$viewtype=GETPOST('viewtype');
 
-$search_description=GETPOST('search_description','alpha');
-$search_debit=GETPOST('search_debit');
-$search_credit=GETPOST('search_credit');
-$paymentType = '';
-
-if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) // Both test are required to be compatible with all browsers
-{
-	$dateyear='';
-	$datemonth='';
-	$viewtype='-1';
-	$search_description='';
-	$search_debit='';
-	$search_credit='';
-}
+$dateyear='';
+$datemonth='';
+$viewtype='-1';
+$search_description='';
+$search_debit='';
+$search_credit='';
 
 $formother = new FormOther($db);
 /*
@@ -98,11 +87,34 @@ if ($action == 'rappro' && $user->rights->banque->consolidate)
 			}
         }
     }
+	else if (GETPOST("button_removefilter_x") || GETPOST("button_removefilter.x") || GETPOST("button_removefilter")) // Both test are required to be compatible with all browsers
+	{//To avoid error msg
+		$error++;
+		$dateyear='';
+		$datemonth='';
+		$viewtype='-1';
+		$search_description='';
+		$search_debit='';
+		$search_credit='';
+	}
+	else if(GETPOST("button_search_x") || GETPOST("button_search.x") || GETPOST("button_search")){//To avoid error msg
+		$error++;
+		$dateyear=GETPOST('dateyear','int');
+		$datemonth=GETPOST('datemonth','int');
+		$viewtype=GETPOST('viewtype');
+		$search_description=GETPOST('search_description','alpha');
+		$search_debit=GETPOST('search_debit');
+		$search_credit=GETPOST('search_credit');
+		$paymentType = '';
+		
+	}
+
     else
     {
     	$error++;
     	$langs->load("errors");
 	    setEventMessages($langs->trans("ErrorPleaseTypeBankTransactionReportName"), null, 'errors');
+		
     }
 
     if (! $error)
@@ -219,7 +231,7 @@ if(!empty($paymentType)){//Search
 }
 
 if(!empty($search_debit)){//Search
-	if(preg_match('#<#',$search_debit)){
+	if(preg_match('#<#',$search_debit)){//Debit is negative but displayed positive.
 		$search_debit = preg_replace('#<#', '>', $search_debit);
 		$sql.= natural_search('b.amount', '-'.$search_debit,1);
 		$search_debit = preg_replace('#>#', '<', $search_debit);
@@ -435,7 +447,7 @@ if ($resql)
 	            if ($links[$key]['type']=='payment') {
 		            $paymentstatic->id=$links[$key]['url_id'];
 		            $theLine.= ' '.$paymentstatic->getNomUrl(2);
-					if(empty($search_description) ||stristr($paymentstatic->getNomUrl(2),$search_description))$isDescribe = true;
+					if(empty($search_description))$isDescribe = true;
 	                $newline=0;
 	            }
 	            elseif ($links[$key]['type']=='payment_supplier') {
@@ -458,7 +470,8 @@ if ($resql)
 					$chargestatic->ref=$links[$key]['url_id'];
 					$chargestatic->lib=$langs->trans("SocialContribution");
 					$theLine.= ' '.$chargestatic->getNomUrl(1);
-					if(empty($search_description) ||stristr($langs->transnoentities("SocialContribution"),$search_description)) $isDescribe = true;
+					
+					if(empty($search_description) ||stristr($chargestatic->ref,$search_description)) $isDescribe = true;
 					
 				}
 				else if ($links[$key]['type']=='payment_sc')
@@ -476,7 +489,7 @@ if ($resql)
 					$paymentvatstatic->ref=$links[$key]['url_id'];
 					$paymentvatstatic->ref=$langs->trans("VATPayment");
 					$theLine.= ' '.$paymentvatstatic->getNomUrl(1);
-					if(empty($search_description) ||stristr($langs->transnoentities("VATPayment"),$search_description)) $isDescribe = true;
+					if(empty($search_description) ||stristr($paymentvatstatic->ref,$search_description)) $isDescribe = true;
 				}
 				else if ($links[$key]['type']=='banktransfert') {
 					$theLine.= '<a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$links[$key]['url_id'].'">';
