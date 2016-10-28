@@ -230,8 +230,10 @@ if(!empty($paymentType)){//Search
 	$sql.=" AND b.fk_type='".$paymentType."'";
 }
 
-if(!empty($search_debit)){//Search
-	if(preg_match('#<#',$search_debit)){//Debit is negative but displayed positive.
+if(!empty($search_debit)){
+	//Search
+	if(preg_match('#<#',$search_debit)){
+		//Debit is negative but displayed positive.
 		$search_debit = preg_replace('#<#', '>', $search_debit);
 		$sql.= natural_search('b.amount', '-'.$search_debit,1);
 		$search_debit = preg_replace('#>#', '<', $search_debit);
@@ -243,7 +245,8 @@ if(!empty($search_debit)){//Search
 		$sql.= natural_search('b.amount', '-'.$search_debit,1);
 	}
 }
-if(!empty($search_credit)){//Search
+if(!empty($search_credit)) {
+	//Search
 	$sql.= natural_search('b.amount', $search_credit,1);
 }
 
@@ -385,55 +388,55 @@ if ($resql)
     while ($i < $num)
     {
         $objp = $db->fetch_object($resql);
-		$isDescribe = false;
-		$theLine ='';
+		$displayLine = false;
+		$lineToDisplay ='';
 			
 	        $var=!$var;
-	        $theLine.= "<tr ".$bc[$var].">\n";
+	        $lineToDisplay.= "<tr ".$bc[$var].">\n";
 	//         print '<form method="post" action="rappro.php?account='.$_GET["account"].'">';
 	//         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 	
 	//         print "<input type=\"hidden\" name=\"rowid\" value=\"".$objp->rowid."\">";
 	
 	        // Date op
-	        $theLine.= '<td align="center" class="nowrap">'.dol_print_date($db->jdate($objp->do),"day").'</td>';
+	        $lineToDisplay.= '<td align="center" class="nowrap">'.dol_print_date($db->jdate($objp->do),"day").'</td>';
 	
 	        // Date value
 			if (! $objp->rappro && ($user->rights->banque->modifier || $user->rights->banque->consolidate))
 			{
-				$theLine.= '<td align="center" class="nowrap">'."\n";
-				$theLine.= '<span id="datevalue_'.$objp->rowid.'">'.dol_print_date($db->jdate($objp->dv),"day")."</span>";
-				$theLine.= '&nbsp;';
-				$theLine.= '<span>';
-				$theLine.= '<a class="ajax" href="'.$_SERVER['PHP_SELF'].'?action=dvprev&amp;account='.$acct->id.'&amp;rowid='.$objp->rowid.'">';
-				$theLine.= img_edit_remove() . "</a> ";
-				$theLine.= '<a class="ajax" href="'.$_SERVER['PHP_SELF'].'?action=dvnext&amp;account='.$acct->id.'&amp;rowid='.$objp->rowid.'">';
-				$theLine.= img_edit_add() ."</a>";
-				$theLine.= '</span>';
-				$theLine.= '</td>';
+				$lineToDisplay.= '<td align="center" class="nowrap">'."\n";
+				$lineToDisplay.= '<span id="datevalue_'.$objp->rowid.'">'.dol_print_date($db->jdate($objp->dv),"day")."</span>";
+				$lineToDisplay.= '&nbsp;';
+				$lineToDisplay.= '<span>';
+				$lineToDisplay.= '<a class="ajax" href="'.$_SERVER['PHP_SELF'].'?action=dvprev&amp;account='.$acct->id.'&amp;rowid='.$objp->rowid.'">';
+				$lineToDisplay.= img_edit_remove() . "</a> ";
+				$lineToDisplay.= '<a class="ajax" href="'.$_SERVER['PHP_SELF'].'?action=dvnext&amp;account='.$acct->id.'&amp;rowid='.$objp->rowid.'">';
+				$lineToDisplay.= img_edit_add() ."</a>";
+				$lineToDisplay.= '</span>';
+				$lineToDisplay.= '</td>';
 			}
 			else
 			{
-				$theLine.= '<td align="center">';
-				$theLine.= dol_print_date($db->jdate($objp->dv),"day");
-				$theLine.= '</td>';
+				$lineToDisplay.= '<td align="center">';
+				$lineToDisplay.= dol_print_date($db->jdate($objp->dv),"day");
+				$lineToDisplay.= '</td>';
 			}
 	
 			// Type + Number
 			$label=($langs->trans("PaymentType".$objp->type)!="PaymentType".$objp->type)?$langs->trans("PaymentType".$objp->type):$objp->type;  // $objp->type is a code
 			if ($label=='SOLD') $label='';
-			$theLine.= '<td class="nowrap">'.$label.($objp->num_chq?' '.$objp->num_chq:'').'</td>';
+			$lineToDisplay.= '<td class="nowrap">'.$label.($objp->num_chq?' '.$objp->num_chq:'').'</td>';
 	
 			// Description
-	        $theLine.= '<td valign="center"><a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$objp->rowid.'&amp;account='.$acct->id.'">';
+	        $lineToDisplay.= '<td valign="center"><a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$objp->rowid.'&amp;account='.$acct->id.'">';
 			$reg=array();
 			preg_match('/\((.+)\)/i',$objp->label,$reg);	// Si texte entoure de parentheses on tente recherche de traduction
 			if(empty($search_description) || stristr($langs->transnoentities($reg[1]),$search_description )){
-			$isDescribe = true;
+			$displayLine = true;
 		}
-			if ($reg[1] && $langs->trans($reg[1])!=$reg[1]) $theLine.= $langs->trans($reg[1]); 
-			else $theLine.= $objp->label;
-	        $theLine.= '</a>';
+			if ($reg[1] && $langs->trans($reg[1])!=$reg[1]) $lineToDisplay.= $langs->trans($reg[1]); 
+			else $lineToDisplay.= $objp->label;
+	        $lineToDisplay.= '</a>';
 	
 	        /*
 	         * Ajout les liens (societe, company...)
@@ -442,26 +445,28 @@ if ($resql)
 	        $links = $acct->get_url($objp->rowid);
 	        foreach($links as $key=>$val)
 	        {
-	            if ($newline == 0) $theLine.= ' - ';
-	            else if ($newline == 1) $theLine.= '<br>';
+	            if ($newline == 0) $lineToDisplay.= ' - ';
+	            else if ($newline == 1) $lineToDisplay.= '<br>';
 	            if ($links[$key]['type']=='payment') {
 		            $paymentstatic->id=$links[$key]['url_id'];
-		            $theLine.= ' '.$paymentstatic->getNomUrl(2);
-					if(empty($search_description))$isDescribe = true;
+		            $lineToDisplay.= ' '.$paymentstatic->getNomUrl(2);
+					if(empty($search_description)) {
+						$displayLine = true;
+					}
 	                $newline=0;
 	            }
 	            elseif ($links[$key]['type']=='payment_supplier') {
 					$paymentsupplierstatic->id=$links[$key]['url_id'];
 					$paymentsupplierstatic->ref=$links[$key]['label'];
-					$theLine.= ' '.$paymentsupplierstatic->getNomUrl(1);
-					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $isDescribe = true;
+					$lineToDisplay.= ' '.$paymentsupplierstatic->getNomUrl(1);
+					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $displayLine = true;
 	                $newline=0;
 				}
 	            elseif ($links[$key]['type']=='company') {
 	                $societestatic->id=$links[$key]['url_id'];
 	                $societestatic->name=$links[$key]['label'];
-	                $theLine.= $societestatic->getNomUrl(1,'',24);
-					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $isDescribe = true;
+	                $lineToDisplay.= $societestatic->getNomUrl(1,'',24);
+					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $displayLine = true;
 					
 	                $newline=0;
 	            }
@@ -469,9 +474,9 @@ if ($resql)
 					$chargestatic->id=$links[$key]['url_id'];
 					$chargestatic->ref=$links[$key]['url_id'];
 					$chargestatic->lib=$langs->trans("SocialContribution");
-					$theLine.= ' '.$chargestatic->getNomUrl(1);
+					$lineToDisplay.= ' '.$chargestatic->getNomUrl(1);
 					
-					if(empty($search_description) ||stristr($chargestatic->ref,$search_description)) $isDescribe = true;
+					if(empty($search_description) ||stristr($chargestatic->ref,$search_description)) $displayLine = true;
 					
 				}
 				else if ($links[$key]['type']=='payment_sc')
@@ -488,83 +493,83 @@ if ($resql)
 					$paymentvatstatic->id=$links[$key]['url_id'];
 					$paymentvatstatic->ref=$links[$key]['url_id'];
 					$paymentvatstatic->ref=$langs->trans("VATPayment");
-					$theLine.= ' '.$paymentvatstatic->getNomUrl(1);
-					if(empty($search_description) ||stristr($paymentvatstatic->ref,$search_description)) $isDescribe = true;
+					$lineToDisplay.= ' '.$paymentvatstatic->getNomUrl(1);
+					if(empty($search_description) ||stristr($paymentvatstatic->ref,$search_description)) $displayLine = true;
 				}
 				else if ($links[$key]['type']=='banktransfert') {
-					$theLine.= '<a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$links[$key]['url_id'].'">';
-					$theLine.= img_object($langs->trans('ShowTransaction'),'payment').' ';
-					$theLine.= $langs->trans("TransactionOnTheOtherAccount");
-					if(empty($search_description) ||stristr($langs->transnoentities("TransactionOnTheOtherAccount"),$search_description)) $isDescribe = true;
-					$theLine.= '</a>';
+					$lineToDisplay.= '<a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$links[$key]['url_id'].'">';
+					$lineToDisplay.= img_object($langs->trans('ShowTransaction'),'payment').' ';
+					$lineToDisplay.= $langs->trans("TransactionOnTheOtherAccount");
+					if(empty($search_description) ||stristr($langs->transnoentities("TransactionOnTheOtherAccount"),$search_description)) $displayLine = true;
+					$lineToDisplay.= '</a>';
 				}
 				else if ($links[$key]['type']=='member') {
-					$theLine.= '<a href="'.DOL_URL_ROOT.'/adherents/card.php?rowid='.$links[$key]['url_id'].'">';
-					$theLine.= img_object($langs->trans('ShowMember'),'user').' ';
-					$theLine.= $links[$key]['label'];
-					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $isDescribe = true;
-					$theLine.= '</a>';
+					$lineToDisplay.= '<a href="'.DOL_URL_ROOT.'/adherents/card.php?rowid='.$links[$key]['url_id'].'">';
+					$lineToDisplay.= img_object($langs->trans('ShowMember'),'user').' ';
+					$lineToDisplay.= $links[$key]['label'];
+					if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $displayLine = true;
+					$lineToDisplay.= '</a>';
 				}
 				else {
 					//print ' - ';
-					$theLine.= '<a href="'.$links[$key]['url'].$links[$key]['url_id'].'">';
+					$lineToDisplay.= '<a href="'.$links[$key]['url'].$links[$key]['url_id'].'">';
 					if (preg_match('/^\((.*)\)$/i',$links[$key]['label'],$reg))
 					{
 						// Label generique car entre parentheses. On l'affiche en le traduisant
 						if ($reg[1]=='paiement') $reg[1]='Payment';
-						$theLine.= $langs->trans($reg[1]);
-						if(empty($search_description) ||stristr($langs->transnoentities($reg[1]),$search_description)) $isDescribe = true;
+						$lineToDisplay.= $langs->trans($reg[1]);
+						if(empty($search_description) ||stristr($langs->transnoentities($reg[1]),$search_description)) $displayLine = true;
 					}
 					else
 					{
-						$theLine.= $links[$key]['label'];
-						if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $isDescribe = true;
+						$lineToDisplay.= $links[$key]['label'];
+						if(empty($search_description) ||stristr($links[$key]['label'],$search_description)) $displayLine = true;
 					}
-					$theLine.= '</a>';
+					$lineToDisplay.= '</a>';
 	                $newline=0;
 	            }
 	        }
-	        $theLine.= '</td>';
+	        $lineToDisplay.= '</td>';
 	
 	        if ($objp->amount < 0)
 	        {
-	            $theLine.= "<td align=\"right\" nowrap>".price($objp->amount * -1)."</td><td>&nbsp;</td>\n";
+	            $lineToDisplay.= "<td align=\"right\" nowrap>".price($objp->amount * -1)."</td><td>&nbsp;</td>\n";
 	        }
 	        else
 	        {
-	            $theLine.= "<td>&nbsp;</td><td align=\"right\" nowrap>".price($objp->amount)."</td>\n";
+	            $lineToDisplay.= "<td>&nbsp;</td><td align=\"right\" nowrap>".price($objp->amount)."</td>\n";
 	        }
 	
 	        if ($objp->rappro)
 	        {
 	            // If line already reconciliated, we show receipt
-	            $theLine.= "<td align=\"center\" nowrap=\"nowrap\"><a href=\"releve.php?num=$objp->num_releve&amp;account=$acct->id\">$objp->num_releve</a></td>";
+	            $lineToDisplay.= "<td align=\"center\" nowrap=\"nowrap\"><a href=\"releve.php?num=$objp->num_releve&amp;account=$acct->id\">$objp->num_releve</a></td>";
 	        }
 	        else
 	        {
 	            // If not already reconciliated
 	            if ($user->rights->banque->modifier)
 	            {
-	                $theLine.= '<td align="center" width="30" class="nowrap">';
+	                $lineToDisplay.= '<td align="center" width="30" class="nowrap">';
 	
-	                $theLine.= '<a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$objp->rowid.'&amp;account='.$acct->id.'&amp;orig_account='.$acct->id.'">';
-	                $theLine.= img_edit();
-	                $theLine.= '</a>&nbsp; ';
+	                $lineToDisplay.= '<a href="'.DOL_URL_ROOT.'/compta/bank/ligne.php?rowid='.$objp->rowid.'&amp;account='.$acct->id.'&amp;orig_account='.$acct->id.'">';
+	                $lineToDisplay.= img_edit();
+	                $lineToDisplay.= '</a>&nbsp; ';
 	
 	                $now=dol_now();
 	                if ($db->jdate($objp->do) <= $now) {
-	                    $theLine.= '<a href="'.DOL_URL_ROOT.'/compta/bank/rappro.php?action=del&amp;rowid='.$objp->rowid.'&amp;account='.$acct->id.'">';
-	                    $theLine.= img_delete();
-	                    $theLine.= '</a>';
+	                    $lineToDisplay.= '<a href="'.DOL_URL_ROOT.'/compta/bank/rappro.php?action=del&amp;rowid='.$objp->rowid.'&amp;account='.$acct->id.'">';
+	                    $lineToDisplay.= img_delete();
+	                    $lineToDisplay.= '</a>';
 	                }
 	                else {
-	                    $theLine.= "&nbsp;";	// On n'empeche la suppression car le raprochement ne pourra se faire qu'apr�s la date pass�e et que l'�criture apparaisse bien sur le compte.
+	                    $lineToDisplay.= "&nbsp;";	// On n'empeche la suppression car le raprochement ne pourra se faire qu'apr�s la date pass�e et que l'�criture apparaisse bien sur le compte.
 	                }
-	                $theLine.= "</td>";
+	                $lineToDisplay.= "</td>";
 	            }
 	            else
 	            {
-	                $theLine.= "<td align=\"center\">&nbsp;</td>";
+	                $lineToDisplay.= "<td align=\"center\">&nbsp;</td>";
 	            }
 	        }
         
@@ -573,8 +578,8 @@ if ($resql)
         if ($db->jdate($objp->do) <= $now)
         {
 
-            $theLine.= '<td align="center" class="nowrap">';
-            $theLine.= '<input class="flat" name="rowid['.$objp->rowid.']" type="checkbox" value="'.$objp->rowid.'" size="1"'.(! empty($_POST['rowid'][$objp->rowid])?' checked':'').'>';
+            $lineToDisplay.= '<td align="center" class="nowrap">';
+            $lineToDisplay.= '<input class="flat" name="rowid['.$objp->rowid.']" type="checkbox" value="'.$objp->rowid.'" size="1"'.(! empty($_POST['rowid'][$objp->rowid])?' checked':'').'>';
 //             print '<input class="flat" name="num_releve" type="text" value="'.$objp->num_releve.'" size="8">';
 //             print ' &nbsp; ';
 //             print "<input class=\"button\" type=\"submit\" value=\"".$langs->trans("Conciliate")."\">";
@@ -583,18 +588,18 @@ if ($resql)
 //                 print "<br><select class=\"flat\" name=\"cat\">$options";
 //                 print "</select>";
 //             }
-            $theLine.= "</td>";
+            $lineToDisplay.= "</td>";
         }
         else
         {
-            $theLine.= '<td align="left">';
-            $theLine.= $langs->trans("FutureTransaction");
-            $theLine.= '</td>';
+            $lineToDisplay.= '<td align="left">';
+            $lineToDisplay.= $langs->trans("FutureTransaction");
+            $lineToDisplay.= '</td>';
         }
 
-        $theLine.= "</tr>\n";
-		if($isDescribe){
-			print $theLine;
+        $lineToDisplay.= "</tr>\n";
+		if($displayLine){
+			print $lineToDisplay;
 		}
         $i++;
    
