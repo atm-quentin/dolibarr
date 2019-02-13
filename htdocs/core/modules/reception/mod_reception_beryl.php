@@ -141,5 +141,4 @@ class mod_reception_beryl extends ModelNumRefReception
 	{
 		return $this->getNextValue($objsoc,$objforref);
 	}
-
 }

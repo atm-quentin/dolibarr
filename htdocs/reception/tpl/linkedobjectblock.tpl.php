@@ -73,7 +73,7 @@ if (count($linkedObjectBlock) > 1)
     	<td align="right"></td>
     	<td align="right"></td>
     </tr>
-    <?php  
+    <?php
 }
 ?>
 

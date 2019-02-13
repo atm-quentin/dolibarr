@@ -94,7 +94,7 @@ if ($action == 'addcontact' && $user->rights->reception->creer)
 	}
 	else
 	{
-		if ($objectsrc->error == 'DB_ERROR_RECORD_ALREADY_EXISTS') 
+		if ($objectsrc->error == 'DB_ERROR_RECORD_ALREADY_EXISTS')
 		{
 			$langs->load("errors");
 			$mesg = $langs->trans("ErrorThisContactIsAlreadyDefinedAsThisType");

@@ -517,6 +517,5 @@ class doc_generic_reception_odt extends ModelePdfReception
 
 		return -1;
 	}
-
 }
 

@@ -60,7 +60,7 @@ class ReceptionStats extends Stats
         
 		$this->socid = ($socid > 0 ? $socid : 0);
         $this->userid = $userid;
-		$this->cachefilesuffix = $mode; 
+		$this->cachefilesuffix = $mode;
         
         $object=new Reception($this->db);
 		$this->from = MAIN_DB_PREFIX.$object->table_element." as c";

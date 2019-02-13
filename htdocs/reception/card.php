@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))  require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 if (! empty($conf->propal->enabled))   require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
-if (! empty($conf->fournisseur->enabled)){ 
+if (! empty($conf->fournisseur->enabled)){
 	require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class.php';
 }
@@ -348,7 +348,7 @@ if (empty($reshook))
 					$sellbydate = str_replace('/','-',$sellby);
 					
 					
-					$ret = $object->addline($entrepot_id, GETPOST($idl, 'int'), GETPOST($qty, 'int'), $array_options[$i], GETPOST($comment, 'alpha'), strtotime($eatbydate),strtotime($sellbydate), GETPOST($batch, 'alpha'));		
+					$ret = $object->addline($entrepot_id, GETPOST($idl, 'int'), GETPOST($qty, 'int'), $array_options[$i], GETPOST($comment, 'alpha'), strtotime($eatbydate),strtotime($sellbydate), GETPOST($batch, 'alpha'));
 					if ($ret < 0)
 					{
 						setEventMessages($object->error, $object->errors, 'errors');
@@ -1170,7 +1170,7 @@ $numAsked ++;
 								if ($line->fk_product > 0)
 								{
 								    print '<!-- Show warehouse selection -->';
-									print $formproduct->selectWarehouses($tmpentrepot_id, 'entl'.$indiceAsked, '', 0 , 0, $line->fk_product, '', 1);
+									print $formproduct->selectWarehouses($tmpentrepot_id, 'entl'.$indiceAsked, '', 0, 0, $line->fk_product, '', 1);
 									
 								}
 							}
@@ -1921,9 +1921,9 @@ else if ($id || $ref)
 							if($conf->productbatch->enabled && !empty($lines[$i]->product->status_batch)){
 								print '<td>  <input name="batch'.$line_id.'" id="batch'.$line_id.'" type="text" value="'.$lines[$i]->batch.'"> </br>';
 								print $langs->trans('EatByDate').' : ';
-								print $form->select_date($lines[$i]->eatby,'dlc' .$line_id , '', '', 1, ""). '</br>';
+								print $form->select_date($lines[$i]->eatby, 'dlc' .$line_id, '', '', 1, ""). '</br>';
 								print $langs->trans('SellByDate').' : ';
-								print $form->select_date($lines[$i]->sellby,'dluo' .$line_id , '', '', 1, "");
+								print $form->select_date($lines[$i]->sellby, 'dluo' .$line_id, '', '', 1, "");
 								print '</td>';
 							}
 							print '</tr>';

@@ -132,6 +132,5 @@ class mod_reception_moonstone extends ModelNumRefReception
     {
         return $this->getNextValue($objsoc,$objforref);
     }
-
 }
 

@@ -525,7 +525,7 @@ class Reception extends CommonObject
 
 		// Define new ref
 		if (! $error && (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref))) // empty should not happened, but when it occurs, the test save life
-		{	
+		{
 			$numref = $this->getNextNumRef($soc);
 		}
 		else {
@@ -886,7 +886,7 @@ class Reception extends CommonObject
 		// Stock control
 		if ($conf->stock->enabled && $conf->global->STOCK_CALCULATE_ON_RECEPTION && $this->statut > 0)
 		{
-			require_once(DOL_DOCUMENT_ROOT."/product/stock/class/mouvementstock.class.php");
+			require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
 
 			$langs->load("agenda");
 
@@ -1023,7 +1023,6 @@ class Reception extends CommonObject
 			$this->db->rollback();
 			return -1;
 		}
-
 	}
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.NotCamelCaps
 	/**
@@ -1080,7 +1079,6 @@ class Reception extends CommonObject
 		}else {
 			return -1;
 		}
-		
 	}
 
 	/**
@@ -1258,7 +1256,6 @@ class Reception extends CommonObject
 			$this->lines[]=$line;
 			$xnbp++;
 		}
-
 	}
 	
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.NotCamelCaps
@@ -1404,7 +1401,6 @@ class Reception extends CommonObject
         $sql.= ' WHERE rowid='.$id;
 
         $resql = $this->db->query($sql);
-
     }
 	
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.NotCamelCaps
@@ -1422,7 +1418,6 @@ class Reception extends CommonObject
         $sql.= ' WHERE rowid='.$id;
 
         $resql = $this->db->query($sql);
-
     }
 
 
@@ -1624,7 +1619,7 @@ class Reception extends CommonObject
 		
 		$this->setClosed();
 
-		$sql = 'UPDATE '.MAIN_DB_PREFIX.'reception SET  billed=1';    
+		$sql = 'UPDATE '.MAIN_DB_PREFIX.'reception SET  billed=1';
 		$sql .= ' WHERE rowid = '.$this->id.' AND fk_statut > 0';
 
 		$resql=$this->db->query($sql);
@@ -1899,7 +1894,7 @@ class Reception extends CommonObject
 					$origin = $this->origin;
 					if ($this->$origin->statut == 4)  // If order source of reception is "partially received"
 					{
-						// Check if there is no more reception validated. 
+						// Check if there is no more reception validated.
 						$this->$origin->fetchObjectLinked();
 						$setStatut = 1;
 						if (!empty($this->$origin->linkedObjects['reception']))
