@@ -156,6 +156,7 @@ CREATE TABLE llx_takepos_floor_tables(
 
 UPDATE llx_c_payment_term SET decalage = nbjour, nbjour = 0 where decalage IS NULL AND type_cdr = 2;
 
+
 UPDATE llx_holiday SET ref = rowid WHERE ref IS NULL;
 
 
@@ -290,9 +291,3 @@ ALTER TABLE llx_accounting_account ADD UNIQUE INDEX uk_accounting_account (accou
 
 UPDATE llx_projet SET fk_opp_status = NULL WHERE fk_opp_status = -1;
 
-ALTER TABLE llx_product_fournisseur_price ADD COLUMN barcode varchar(180) DEFAULT NULL;
-ALTER TABLE llx_product_fournisseur_price ADD COLUMN fk_barcode_type integer DEFAULT NULL;
-ALTER TABLE llx_product_fournisseur_price ADD INDEX idx_product_barcode (barcode);
-ALTER TABLE llx_product_fournisseur_price ADD INDEX idx_product_fk_barcode_type (fk_barcode_type);
-ALTER TABLE llx_product_fournisseur_price ADD UNIQUE INDEX uk_product_barcode (barcode, fk_barcode_type, entity);
-ALTER TABLE llx_product_fournisseur_price ADD CONSTRAINT fk_product_fournisseur_price_barcode_type FOREIGN KEY (fk_barcode_type) REFERENCES  llx_c_barcode_type (rowid);
