@@ -942,3 +942,25 @@ function monthArray($outputlangs,$short=0)
 	return $montharray;
 }
 
+function getWeekNumbersOfMonth($month, $year) {
+	$nb_days = cal_days_in_month(CAL_GREGORIAN,$month, $year);
+	$TWeek = array();
+	for($day = 1; $day < $nb_days; $day++) {
+		$week_number = getWeekNumber($day, $month, $year);
+		$TWeek[$week_number] = $week_number;
+	}
+	return $TWeek;
+}
+function getFirstDayOfEachWeek($TWeek, $year) {
+	$TFirstDayOfWeek = array();
+	foreach($TWeek as $weekNb) {
+		$TFirstDayOfWeek[$weekNb] = date('d',strtotime($year.'W'.$weekNb));
+	}
+	return $TFirstDayOfWeek;
+}
+
+function getWeekNumber($day, $month, $year) {
+	$date = new DateTime($year.'-'.$month.'-'.$day);
+	$week = $date->format("W");
+	return $week;
+}
