@@ -914,7 +914,7 @@ function projectLinesPerDay(&$inc, $parent, $fuser, $lines, &$level, &$projectsr
 
 				if ($oldprojectforbreak != -1) $oldprojectforbreak = $projectstatic->id;
 
-				print '<tr class="oddeven">'."\n";
+				print '<tr class="oddeven" data-taskid="'.$lines[$i]->id.'">'."\n";
 
 				// User
 				/*
@@ -1187,7 +1187,7 @@ function projectLinesPerWeek(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &$
 
 				if ($oldprojectforbreak != -1) $oldprojectforbreak = $projectstatic->id;
 
-				print '<tr class="oddeven">'."\n";
+				print '<tr class="oddeven" data-taskid="'.$lines[$i]->id.'">'."\n";
 
 				// User
 				/*
@@ -1452,8 +1452,7 @@ function projectLinesPerMonth(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &
 				}
 
 				if ($oldprojectforbreak != -1) $oldprojectforbreak = $projectstatic->id;
-
-				print '<tr class="oddeven">'."\n";
+				print '<tr class="oddeven" data-taskid="'.$lines[$i]->id.'">'."\n";
 
 				// User
 				/*
@@ -1539,6 +1538,9 @@ function projectLinesPerMonth(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &
 				$tableCell=''; $modeinput='hours';
 				$TFirstDay = getFirstDayOfEachWeek($TWeek, date('Y',$firstdaytoshow));
 				$TFirstDay[reset($TWeek)] = 1;
+				foreach($TFirstDay as &$fday) {
+					$fday--;
+				}
 				foreach ($TWeek as $weekNb)
 				{
 

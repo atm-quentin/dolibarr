@@ -65,6 +65,7 @@ NewTask=Nouvelle tâche
 AddTask=Créer tâche
 AddTimeSpent=Saisir temps consommé
 AddHereTimeSpentForDay=Ajoutez ici le temps passé pour cette journée/tâche
+AddHereTimeSpentForWeek=Ajoutez ici le temps passé pour cette semaine/tâche
 Activity=Activité
 Activities=Tâches/activités
 MyActivities=Mes tâches/activités
