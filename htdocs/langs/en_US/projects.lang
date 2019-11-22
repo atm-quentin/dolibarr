@@ -69,6 +69,7 @@ NewTask=New task
 AddTask=Create task
 AddTimeSpent=Create time spent
 AddHereTimeSpentForDay=Add here time spent for this day/task
+AddHereTimeSpentForWeek=Add here time spent for this week/task
 Activity=Activity
 Activities=Tasks/activities
 MyActivities=My tasks/activities

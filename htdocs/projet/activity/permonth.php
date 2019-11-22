@@ -36,6 +36,7 @@ require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('projects','users','companies'));
+$hookmanager->initHooks(array('timesheetpermonthcard'));
 
 $action=GETPOST('action','aZ09');
 $mode=GETPOST("mode",'alpha');
@@ -110,6 +111,9 @@ $object=new Task($db);
 /*
  * Actions
  */
+$parameters = array('id' => $id, 'taskid' => $taskid, 'projectid' => $projectid, 'TWeek' => $TWeek);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 // Purge criteria
 if (GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter.x','alpha') || GETPOST('button_removefilter','alpha')) // All tests are required to be compatible with all browsers
