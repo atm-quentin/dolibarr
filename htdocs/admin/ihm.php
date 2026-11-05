@@ -271,6 +271,11 @@ if ($action == 'update') {
 
 		dolibarr_set_const($db, "MAIN_SIZE_LISTE_LIMIT", GETPOSTINT("MAIN_SIZE_LISTE_LIMIT"), 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, "MAIN_SIZE_SHORTLIST_LIMIT", GETPOSTINT("MAIN_SIZE_SHORTLIST_LIMIT"), 'chaine', 0, '', $conf->entity);
+		if (GETPOSTINT("MAIN_MAXTABS_IN_CARD") > 0) {
+			dolibarr_set_const($db, "MAIN_MAXTABS_IN_CARD", GETPOSTINT("MAIN_MAXTABS_IN_CARD"), 'chaine', 0, '', $conf->entity);
+		} else {
+			dolibarr_del_const($db, "MAIN_MAXTABS_IN_CARD", $conf->entity);
+		}
 
 		if (GETPOSTISSET("MAIN_CHECKBOX_LEFT_COLUMN")) {
 			dolibarr_set_const($db, "MAIN_CHECKBOX_LEFT_COLUMN", GETPOSTINT("MAIN_CHECKBOX_LEFT_COLUMN"), 'chaine', 0, '', $conf->entity);
@@ -479,6 +484,18 @@ if ($mode == 'other') {
 
 	// Max size of short lists on customer card
 	print '<tr class="oddeven"><td>' . $langs->trans("DefaultMaxSizeShortList") . '</td><td><input class="flat width50" name="MAIN_SIZE_SHORTLIST_LIMIT" value="' . getDolGlobalString('MAIN_SIZE_SHORTLIST_LIMIT') . '"></td>';
+	print '</tr>';
+
+	// Max number of tabs shown on cards, the other ones are grouped into a drop-down tab
+	print '<tr class="oddeven"><td>' . $langs->trans("MaxNbOfTabsInCard") . '</td><td><input class="flat width50" type="number" min="1" name="MAIN_MAXTABS_IN_CARD" value="';
+	if (getDolGlobalInt('MAIN_MAXTABS_IN_CARD') > 0) {
+		print getDolGlobalInt('MAIN_MAXTABS_IN_CARD');
+	}
+	print '">';
+	if (getDolGlobalInt('MAIN_MAXTABS_IN_CARD') <= 0) {
+		print ' &nbsp; <span class="opacitymedium">('.$langs->trans("All").')</span>';
+	}
+	print '</td>';
 	print '</tr>';
 
 	// Display checkboxes and fields menu left / right

@@ -1286,6 +1286,7 @@ MaxSizeList=Max length for lists
 DefaultMaxSizeList=Default max length for lists
 MaxSizeShortList=Max length for short lists
 DefaultMaxSizeShortList=Default max length for short lists (i.e. in customer card)
+MaxNbOfTabsInCard=Max number of tabs shown on cards (the other ones are grouped into a drop-down tab)
 DisplayGrandTotalInList=Display grand total (for all pages) in lists footer
 MessageOfDay=Message of the day
 MessageLogin=Login page message
