@@ -69,3 +69,5 @@ ErrorRecruitmmentCandidatureAlreadyExists= Recruitment candidature already exist
 RecruitmentCandidatureSaved=Recruitement candidature successfully saved
 NoOpenJobOffer=No open job offers at the moment
 ShowPositionToBeFilled=Show Position to be filled
+JobPositionLocation=Location of the job
+JobPositionDetails=Details of the job

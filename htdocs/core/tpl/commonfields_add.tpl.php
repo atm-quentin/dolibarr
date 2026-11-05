@@ -47,6 +47,7 @@ if (empty($conf) || !is_object($conf)) {
 
 $object->fields = dol_sort_array($object->fields, 'position');
 
+$currentsection = '';
 foreach ($object->fields as $key => $val) {
 	// Discard if field is a hidden field on form
 	// Ensure $val['visible'] is treated as an integer
@@ -58,6 +59,8 @@ foreach ($object->fields as $key => $val) {
 	if (array_key_exists('enabled', $val) && isset($val['enabled']) && !verifCond($val['enabled'])) {
 		continue; // We don't want this field
 	}
+
+	print $object->showFieldSectionTitle($val, $currentsection, 'create');
 
 	print '<tr class="field_'.$key.'">';
 	print '<td';

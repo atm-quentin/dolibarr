@@ -50,6 +50,7 @@ if (!is_object($form)) {
 
 $object->fields = dol_sort_array($object->fields, 'position');
 
+$currentsection = '';
 foreach ($object->fields as $key => $val) {
 	// Discard if extrafield is a hidden field on form
 	if (abs($val['visible']) != 1 && abs($val['visible']) != 3 && abs($val['visible']) != 4) {
@@ -59,6 +60,8 @@ foreach ($object->fields as $key => $val) {
 	if (array_key_exists('enabled', $val) && isset($val['enabled']) && !verifCond($val['enabled'])) {
 		continue; // We don't want this field
 	}
+
+	print $object->showFieldSectionTitle($val, $currentsection, 'edit');
 
 	print '<tr class="field_'.$key.'"><td';
 	print ' class="titlefieldcreate';

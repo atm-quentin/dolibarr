@@ -55,6 +55,7 @@ if (!is_object($form)) {
 
 $object->fields = dol_sort_array($object->fields, 'position');
 
+$currentsection = '';
 foreach ($object->fields as $key => $val) {
 	if (isset($keyforbreak) && !empty($keyforbreak) && $key == $keyforbreak) {
 		break; // key used for break on second column
@@ -71,6 +72,8 @@ foreach ($object->fields as $key => $val) {
 	if (in_array($key, array('rowid', 'ref', 'status'))) {
 		continue; // rowid, ref and status are already in dol_banner
 	}
+
+	print $object->showFieldSectionTitle($val, $currentsection, 'view');
 
 	$value = $object->$key;
 
@@ -143,6 +146,7 @@ print '</div>';
 
 $rightpart = '';
 $alreadyoutput = 1;
+$currentsection = '';
 foreach ($object->fields as $key => $val) {
 	if ($alreadyoutput) {
 		if (isset($keyforbreak) && !empty($keyforbreak) && $key == $keyforbreak) {
@@ -163,6 +167,8 @@ foreach ($object->fields as $key => $val) {
 	if (in_array($key, array('ref', 'status'))) {
 		continue; // Ref and status are already in dol_banner
 	}
+
+	$rightpart .= $object->showFieldSectionTitle($val, $currentsection, 'view');
 
 	$value = $object->$key;
 

@@ -252,6 +252,49 @@ class CommonObjectTest extends CommonClassTest
 	}
 
 	/**
+	 *  testShowFieldSectionTitle
+	 *
+	 *  @return void
+	 */
+	public function testShowFieldSectionTitle()
+	{
+		global $conf,$user,$langs,$db;
+		$conf = $this->savconf;
+		$user = $this->savuser;
+		$langs = $this->savlangs;
+		$db = $this->savdb;
+
+		$localobject = new Commande($db);
+		$currentsection = '';
+
+		// A field without section outputs nothing, so forms without the key are unchanged
+		$this->assertSame('', $localobject->showFieldSectionTitle(array('label' => 'Ref'), $currentsection, 'create'));
+		$this->assertSame('', $currentsection);
+
+		$out = $localobject->showFieldSectionTitle(array('section' => 'Description'), $currentsection, 'create');
+		$this->assertStringContainsString('<tr class="trextrafieldseparator trfieldsection trfieldsection_Description">', $out);
+		$this->assertStringContainsString('<td colspan="2"><br>', $out);
+		$this->assertStringContainsString('<strong>'.dol_escape_htmltag($langs->transnoentitiesnoconv('Description')).'</strong>', $out);
+		$this->assertSame('Description', $currentsection);
+
+		$this->assertSame('', $localobject->showFieldSectionTitle(array('section' => 'Description'), $currentsection, 'create'), 'Title is printed once per group');
+
+		$out = $localobject->showFieldSectionTitle(array('section' => 'Other'), $currentsection, 'view', 3);
+		$this->assertStringContainsString('<td colspan="3">', $out);
+		$this->assertStringNotContainsString('<br>', $out);
+		$this->assertSame('Other', $currentsection);
+
+		$this->assertSame('', $localobject->showFieldSectionTitle(array('section' => ''), $currentsection, 'view'));
+		$this->assertSame('', $currentsection, 'A field without section closes the group');
+
+		$out = $localobject->showFieldSectionTitle(array('section' => '<b>x"y'), $currentsection, 'view');
+		$this->assertStringContainsString('trfieldsection_bxy"', $out);
+		$this->assertStringNotContainsString('<b>', $out);
+
+		print __METHOD__." OK\n";
+	}
+
+	/**
 	 * setFieldValue() must only alter the targeted field/property.
 	 * Regression test: a previous implementation iterated over the values of
 	 * deprecatedProperties() (status, totalpaid, fk_project, project, origin_object, ...)

@@ -197,6 +197,7 @@ abstract class CommonObject
 	 * showonheader?: int<0, 1>,
 	 * searchmulti?: int<0, 1>,
 	 * picto?: string,
+	 * section?: string,
 	 * required?: int<0, 1>,
 	 * placeholder?: string,
 	 * bi?:int<0, 1>
@@ -234,6 +235,7 @@ abstract class CommonObject
 	 * 'placeholder' to set the placeholder of a varchar field.
 	 * 'help' and 'helplist' is a 'TranslationString' to use to show a tooltip on field. You can also use 'TranslationString:keyfortooltiponlick' for a tooltip on click.
 	 * 'showoncombobox' if value of the field must be visible into the label of the combobox that list record
+	 * 'section' is a translation key. Consecutive fields with the same value are grouped under this title in create, edit and view forms.
 	 * 'disabled' is 1 if we want to have the field locked by a 'disabled' attribute. In most cases, this is never set into the definition of $fields into class, but is set dynamically by some part of code like the constructor of the class.
 	 * 'arrayofkeyval' to set a list of values if type is a list of predefined values. For example: array("0"=>"Draft","1"=>"Active","-1"=>"Cancel"). Note that type can be 'integer' or 'varchar'
 	 * 'autofocusoncreate' to have field having the focus on a create form. Only 1 field should have this property set to 1.
@@ -9880,6 +9882,41 @@ abstract class CommonObject
 		$out = $value;
 
 		return is_null($out) ? '' : $out;
+	}
+
+	/**
+	 * Return the title row of a section of fields, if the field starts a new section.
+	 *
+	 * @param	array<string,mixed>	$val				Definition of the field (an entry of $this->fields)
+	 * @param	string				$currentsection		Section of the previously shown field. Updated with the section of this field.
+	 * @param	string				$mode				'view', 'create' or 'edit'
+	 * @param	int					$colspan			Number of columns of the table
+	 * @return	string								HTML row, or '' if the field does not start a new section
+	 */
+	public function showFieldSectionTitle($val, &$currentsection, $mode = 'view', $colspan = 2)
+	{
+		global $langs;
+
+		$section = empty($val['section']) ? '' : (string) $val['section'];
+		if ($section === '' || $section === $currentsection) {
+			$currentsection = $section;
+			return '';
+		}
+		$currentsection = $section;
+
+		// Markup must stay aligned with a non collapsible ExtraFields::showSeparator()
+		$out = '<tr class="trextrafieldseparator trfieldsection trfieldsection_'.dol_escape_htmltag(preg_replace('/[^a-z0-9_]/i', '', $section)).'">';
+		$out .= '<td colspan="'.((int) $colspan).'">';
+		if ($mode == 'create' || $mode == 'edit') {
+			$out .= '<br>';
+		}
+		$out .= '<span class="fas fa-square opacitymedium"></span>';
+		$out .= '&nbsp;';
+		$out .= '<strong>'.dol_escape_htmltag($langs->transnoentitiesnoconv($section)).'</strong>';
+		$out .= '</td>';
+		$out .= '</tr>';
+
+		return $out;
 	}
 
 	/**
