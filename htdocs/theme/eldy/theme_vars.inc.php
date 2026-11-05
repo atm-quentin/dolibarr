@@ -33,7 +33,7 @@
 
 global $theme_bordercolor, $theme_datacolor, $theme_bgcolor, $theme_bgcoloronglet;
 $theme_bordercolor = array(235, 235, 224);
-$theme_datacolor = array(array(137, 86, 161), array(60, 147, 183), array(250, 190, 80), array(80, 166, 90), array(190, 190, 100), array(91, 115, 247), array(140, 140, 220), array(190, 120, 120), array(115, 125, 150), array(100, 170, 20), array(150, 135, 125), array(85, 135, 150), array(150, 135, 80), array(150, 80, 150));
+$theme_datacolor = array(array(125, 75, 221), array(63, 157, 202), array(189, 76, 10), array(19, 141, 97), array(177, 146, 28), array(91, 115, 249), array(183, 90, 196), array(197, 118, 113), array(109, 119, 184), array(96, 165, 14), array(211, 69, 108), array(6, 130, 156), array(135, 120, 40), array(161, 76, 130));
 if (!defined('ISLOADEDBYSTEELSHEET')) {	// File is run after an include of a php page, not by the style sheet, if the constant is not defined.
 	if (getDolGlobalString('MAIN_OPTIMIZEFORCOLORBLIND')) { // user is loaded by dolgraph.class.php
 		if (getDolGlobalString('MAIN_OPTIMIZEFORCOLORBLIND') == 'flashy') {
